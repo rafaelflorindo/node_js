@@ -1,0 +1,17 @@
+<h1>Listar Pagamentos</h1>
+<table border=1>
+    <tr>
+        <th>NOME</th>
+        <th>DESCRIÇÃO</th>
+        <th>VALOR</th>
+        <th>CADASTRADO</th>
+    </tr>
+{{#each pagamentos}}
+    <tr>
+        <td>{{nome}}</td>
+        <td>{{descricao}}</td>
+        <td>{{valor}}</td>
+        <td>{{#formatDate createdAt}} {{/formatDate}}</td>
+    </tr>
+{{/each}}
+</table>

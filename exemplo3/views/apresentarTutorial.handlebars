@@ -12,7 +12,7 @@
               <a class="nav-link" href="/sobre">Sobre</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/listarTutorial">Tutoriais</a>
+              <a class="nav-link" href="/tutoriais">Tutoriais</a>
             </li>
           </ul>
           <form class="form-inline my-2 my-lg-0">
@@ -26,45 +26,20 @@
     <div class="row">
         <div class="col col-lg-10">&nbsp;</div>
     </div>
-        
             <div class="row">
-                <div class="col col-lg-4">   
-                    <h2>Pagamentos Realizados</h2>
-                </div>
-                <div class="col col-lg-8 text-right"> 
-                <a href="/formularioAdicionarPagamento" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Adicionar </a>
-                <a class="btn btn-default" href="/listarPagamento"><i class="fa fa-refresh"></i> Atualizar</a>
+                <div class="col col-lg-10">   
+                    <h2>{{result.titulo}}</h2>
                 </div>
             </div>
         <div class="row justify-content-lg-center">
-
-          {{#if pagamentos}} 
-
+          {{#if result}}        
             <div class="col col-lg-12"> 
-                <table class="table table-hover">
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">ALUNO</th>
-                    <th scope="col">DESCRIÇÃO</th>
-                    <th scope="col">VALOR</th>
-                    <th scope="col">CADASTRADO</th>
-                    <th scope="col">OPÇÕES</th>
-                </tr>
-            {{#each pagamentos}}
-                <tr>
-                    <td scope="row">{{id}}</td>
-                    <td>{{nome}}</td>
-                    <td>{{descricao}}</td>
-                    <td>{{valor}}</td>
-                    <td>{{#formatDate createdAt}} {{/formatDate}}</td>
-                    <td>
-                        <a href="/update/{{id}}" class="btn btn-sm btn-success"><i class="fa fa-eye"></i> Visualizar</a>
-                        <a href="/update/{{id}}" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i>Editar</a>
-                        <a href="/deletarPagamento/{{id}}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i>Excluir</a>
-                    </td>
-                </tr>
-            {{/each}}
-            </table> 
+                    <h4>Autor: {{result.autor}}</h4>
+                    <h5>Categoria: {{result.categoria}}</h5>
+                    <span>Publicado em: {{#formatDate createdAt}} {{/formatDate}}</span>
+                    
+                    <p><br />{{result.texto}}</p>
+                    
             </div>
           {{else}}
           <div class="alert alert-danger" role="alert">

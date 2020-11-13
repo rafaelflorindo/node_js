@@ -5,6 +5,8 @@ const express = require("express");
 const app = express();
 const porta = 8080;
 app.listen(porta);
+var cookieParser = require('cookie-parser')
+app.use(cookieParser())
 //************************************************************************* */
 
 
@@ -54,6 +56,8 @@ const moment = require('moment') //formatação
 //************************************************************************* */
 const Pagamento = require("./models/Pagamento")
 
+const Tutorial = require("./models/Tutorial")
+
 
 
 //*************************************************************************
@@ -62,14 +66,28 @@ const Pagamento = require("./models/Pagamento")
 app.get("/",function(req, res){
     res.send("Página Principal")
 })
+
+//rotas para pagamento
 app.get("/formularioAdicionarPagamento",function(req, res){
     res.render('formularioAdicionarPagamento');
 })
 app.get("/listarPagamento",function(req, res){
-    Pagamento.findAll().then(function(pagamentos){
+    //listagem sem parâmetros
+    /*Pagamento.findAll().then(function(pagamentos){
         res.render('listarPagamento',
         {pagamentos: pagamentos})
+    })*/
+
+    Pagamento.findAll({
+            order: [['id', 'ASC']],
+            atributes: ['nome','valor']//*********** */
+        }).then(function(pagamentos){
+            res.render('listarPagamento',
+            {
+                pagamentos: pagamentos
+            })
     })
+    
 })
 app.post("/adicionarPagamento",function(req, res){
    /* //para teste 
@@ -88,6 +106,168 @@ app.post("/adicionarPagamento",function(req, res){
         res.send("Erro a cadastrar o pagamento" + erro)
     })
 })
+app.get("/deletarPagamento/:id",function(req, res){
+    
+     Pagamento.destroy({
+         where: {'id': req.params.id
+        }
+     }).then(function(){
+         res.send("Pagamento deletado com sucesso")
+         //res.redirect('/listarPagamento')
+     }).catch(function(erro){
+         res.send("Erro a excluir o pagamento" + erro)
+     })
+ })
+ //https://sequelize.org/master/manual/model-instances.html#updating-an-instance
+ app.get('/update/:id', function(req, res){
+    id = req.params.id;
+    
+    res.cookie(
+        'id', id, 
+        {
+            expire: new Date()+10*60*1000
+        });//10 minutos
+
+    Pagamento.findOne({
+        where:{id:id}
+    }).then(function(result){
+        if(!result){
+            res.end("id não encontrado")
+        }else{
+            res.render('formularioEditarPagamento',{result: result})
+        }
+    })
+ })
+ app.post('/update', function(req, res, next){//update
+    id = req.cookies.id; //npm install cookie-parser --save
+    
+    nome = req.body.nome;
+    descricao = req.body.descricao;
+    valor = req.body.valor;
+    
+    if (nome && descricao && valor){
+        Pagamento.update({
+            nome: nome,
+            descricao: descricao,
+            valor: valor
+        },
+        {
+            where : {
+                id:id
+            }
+        });
+        res.clearCookie('id');
+        res.redirect('/listarPagamento');
+    }else{
+        message = "Os campos estão vázios";
+        res.render('formularioEditarPagamento',{message: message, result: req.body})
+    }
+ })
+/************************************************************ */
+ //rotas para Tutoriais
+app.get("/formularioAdicionarTutorial",function(req, res){
+    res.render('formularioAdicionarTutorial');
+})
+app.get("/listarTutorial",function(req, res){
+    Tutorial.findAll({
+            order: [['id', 'ASC']],
+            atributes: ['titulo','autor']
+        }).then(function(tutoriais){
+            res.render('listarTutoriais',
+            {
+                tutoriais: tutoriais
+            })
+    })
+    
+})
+app.post("/adicionarTutorial",function(req, res){
+   Tutorial.create({
+        titulo: req.body.titulo,
+        autor: req.body.autor,
+        texto: req.body.texto,
+        categoria: req.body.categoria
+    }).then(function(){
+        res.redirect('/listarTutorial')
+    }).catch(function(erro){
+        res.send("Erro a cadastrar o tutorial" + erro)
+    })
+})
+app.get("/deletarTutorial/:id",function(req, res){
+    
+    Tutorial.destroy({
+         where: {'id': req.params.id
+        }
+     }).then(function(){
+         res.send("Tutorial deletado com sucesso")
+         //res.redirect('/listarTutoriais')
+     }).catch(function(erro){
+         res.send("Erro a excluir o tutorial" + erro)
+     })
+ })
+ 
+ app.get('/updateTutorial/:id', function(req, res){
+    id = req.params.id;
+    
+    res.cookie(
+        'id', id, 
+        {
+            expire: new Date()+10*60*1000
+        });//10 minutos
+
+        Tutorial.findOne({
+        where:{id:id}
+    }).then(function(result){
+        if(!result){
+            res.end("id não encontrado")
+        }else{
+            res.render('formularioEditarTutorial',{result: result})
+        }
+    })
+ })
+ app.post('/updateTutorial', function(req, res, next){//update
+    id = req.cookies.id; //npm install cookie-parser
+    titulo = req.body.titulo;
+    autor = req.body.autor;
+    texto = req.body.texto;
+    categoria = req.body.categoria;
+    if (titulo && autor && texto && categoria){
+        Tutorial.update({
+            titulo: titulo,
+            autor: autor,
+            texto: texto,
+            categoria: categoria
+        },
+        {
+            where : {
+                id:id
+            }
+        });
+        res.clearCookie('id');
+        res.redirect('/listarTutorial');
+    }else{
+        message = "Os campos estão vazios";
+        res.render('formularioEditarTutorial',{message: message, result: req.body})
+    }
+ })
+ app.get('/apresentarTutorial/:id', function(req, res){
+    id = req.params.id;
+    
+    res.cookie(
+        'id', id, 
+        {
+            expire: new Date()+10*60*1000
+        });//10 minutos
+
+        Tutorial.findOne({
+        where:{id:id}
+    }).then(function(result){
+        if(!result){
+            res.end("id não encontrado")
+        }else{
+            res.render('apresentarTutorial',{result: result})
+        }
+    })
+ })
 //************************************************************************* */
 
 

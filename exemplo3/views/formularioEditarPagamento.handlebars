@@ -5,26 +5,26 @@
         
     <div class="row">
         <div class="col col-lg-12">   
-            <h2>Formulário para Adicionar os Pagamentos</h2>
+            <h2>Formulário para atualizar os Pagamentos</h2>
         </div>
     </div>
     <div class="row justify-content">
         <div class="col col-lg-6"> 
-            <form action="/adicionarPagamento" method="post">
+            <form action="/update" method="post">
                 <div class="form-group">
                     <label for="">Nome do Aluno:</label>
-                    <input type="text" name="nome" class="form-control">
+                    <input type="text" name="nome" value='{{result.nome}}' class="form-control">
                 </div>
                 <div class="form-group">
                     <label for="">Descrição do Pagamento:</label>
-                    <input type="text" name="descricao" class="form-control">
+                    <input type="text" name="descricao" value='{{result.descricao}}' class="form-control">
                 </div>
                 <div class="form-group">
                     <label for="">Valor:</label>
-                    <input type="text" name="valor" class="form-control"><br><br>
+                    <input type="text" name="valor" value='{{result.valor}}' class="form-control"><br><br>
                 </div>
                 <div class="form-group">
-                    <button class= "btn btn-primary" type="submit">ADICIONAR</button>
+                    <button class= "btn btn-primary" type="submit">ATUALIZAR</button>
                 </div>      
             </form>
         </div>
